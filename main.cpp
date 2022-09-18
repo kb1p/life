@@ -1,3 +1,5 @@
+#include "lifeboard.h"
+
 #include <SDL2/SDL.h>
 #include <string>
 
@@ -24,6 +26,12 @@ int main(int argc, char *argv[])
         if (!g)
             throw "failed to create renderer";
 
+        LifeBoard board;
+        board.init(100, 100);
+
+        const int cellWidth = 640 / 100,
+                  cellHeight = 480 / 100;
+
         bool runLoop = true;
         while (runLoop)
         {
@@ -36,14 +44,27 @@ int main(int argc, char *argv[])
             }
 
             // Update game area state
+            board.update();
 
             // Render the area
             SDL_SetRenderDrawColor(g, 0, 0, 0, 0xFFu);
             SDL_RenderClear(g);
 
-            SDL_Rect r = { 50, 50, 250, 350 };
-            SDL_SetRenderDrawColor(g, 0x00, 0xFF, 0x00, 0xFF);        
-            SDL_RenderFillRect(g, &r);
+            SDL_Rect rCell;
+            rCell.w = cellWidth;
+            rCell.h = cellHeight;
+            for (int r = 0; r < board.height(); r++)
+                for (int c = 0; c < board.width(); c++)
+                {
+                    const int v = board.cell(r, c);
+                    if (v != LifeBoard::EMPTY_CELL)
+                    {
+                        rCell.x = c * cellWidth;
+                        rCell.y = r * cellHeight;
+                        SDL_SetRenderDrawColor(g, 0xFF, 0x00, 0x00, 0xFF);        
+                        SDL_RenderFillRect(g, &rCell);
+                    }
+                }
 
             SDL_RenderPresent(g);
         }
