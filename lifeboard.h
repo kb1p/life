@@ -16,7 +16,8 @@ class LifeBoard
 public:
     static const int EMPTY_CELL = 0;
 
-    void init(int width, int height);
+    // Init with random layout
+    void init(int width, int height, float dens = 0.3f);
 
     int width() const noexcept
     {

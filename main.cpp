@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <string>
+#include <cmath>
 
 int main(int argc, char *argv[])
 {
@@ -27,10 +28,10 @@ int main(int argc, char *argv[])
             throw "failed to create renderer";
 
         LifeBoard board;
-        board.init(100, 100);
+        board.init(100, 100, 0.1f);
 
-        const int cellWidth = 640 / 100,
-                  cellHeight = 480 / 100;
+        const float cellWidth = static_cast<float>(640) / board.width(),
+                    cellHeight = static_cast<float>(480) / board.height();
 
         bool runLoop = true;
         while (runLoop)
@@ -51,16 +52,18 @@ int main(int argc, char *argv[])
             SDL_RenderClear(g);
 
             SDL_Rect rCell;
-            rCell.w = cellWidth;
-            rCell.h = cellHeight;
             for (int r = 0; r < board.height(); r++)
                 for (int c = 0; c < board.width(); c++)
                 {
                     const int v = board.cell(r, c);
                     if (v != LifeBoard::EMPTY_CELL)
                     {
-                        rCell.x = c * cellWidth;
-                        rCell.y = r * cellHeight;
+                        const auto x = c * cellWidth,
+                                   y = r * cellHeight;
+                        rCell.x = static_cast<int>(std::floor(x));
+                        rCell.y = static_cast<int>(std::floor(y));
+                        rCell.w = static_cast<int>(std::floor(cellWidth + x - rCell.x));
+                        rCell.h = static_cast<int>(std::floor(cellHeight + y - rCell.y));
                         SDL_SetRenderDrawColor(g, 0xFF, 0x00, 0x00, 0xFF);        
                         SDL_RenderFillRect(g, &rCell);
                     }
