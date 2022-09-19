@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     SDL_Renderer *g = { };
     try
     {
-        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+        if (SDL_Init(SDL_INIT_VIDEO) < 0)
             throw "SDL initialization failed";
 
         win = SDL_CreateWindow("Life game",
@@ -30,18 +30,18 @@ int main(int argc, char *argv[])
         LifeBoard board;
         board.init(100, 100, 0.1f);
 
-        const float cellWidth = static_cast<float>(640) / board.width(),
-                    cellHeight = static_cast<float>(480) / board.height();
-
         bool runLoop = true;
         while (runLoop)
         {
             SDL_Event evt;
             while (SDL_PollEvent(&evt) != 0)
             {
-                if (evt.type == SDL_QUIT)
-                    runLoop = false;
-                // Handle other events...
+                switch (evt.type)
+                {
+                    case SDL_QUIT:
+                        runLoop = false;
+                        break;
+                }
             }
 
             // Update game area state
@@ -51,6 +51,10 @@ int main(int argc, char *argv[])
             SDL_SetRenderDrawColor(g, 0, 0, 0, 0xFFu);
             SDL_RenderClear(g);
 
+            int winW, winH;
+            SDL_GetWindowSize(win, &winW, &winH);
+            const float cellWidth = static_cast<float>(winW) / board.width(),
+                        cellHeight = static_cast<float>(winH) / board.height();
             SDL_Rect rCell;
             for (int r = 0; r < board.height(); r++)
                 for (int c = 0; c < board.width(); c++)
