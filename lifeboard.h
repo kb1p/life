@@ -2,6 +2,8 @@
 #define LIFEBOARD_H
 
 #include <memory>
+#include <array>
+#include <cstdint>
 #include <cassert>
 
 /**
@@ -42,6 +44,8 @@ public:
     }
 
     void update();
+
+    std::array<uint8_t, 3> color(int p) const noexcept;
 };
 
 #endif // LIFEBOARD_H

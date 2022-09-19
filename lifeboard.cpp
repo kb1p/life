@@ -28,3 +28,11 @@ void LifeBoard::init(int width, int height, float dens)
 void LifeBoard::update()
 {
 }
+
+std::array<uint8_t, 3> LifeBoard::color(int p) const noexcept
+{
+    (void)p;
+
+    // For now we support only 1 player
+    return { 0xFFu, 0u, 0u };
+}

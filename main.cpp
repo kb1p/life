@@ -64,7 +64,8 @@ int main(int argc, char *argv[])
                         rCell.y = static_cast<int>(std::floor(y));
                         rCell.w = static_cast<int>(std::floor(cellWidth + x - rCell.x));
                         rCell.h = static_cast<int>(std::floor(cellHeight + y - rCell.y));
-                        SDL_SetRenderDrawColor(g, 0xFF, 0x00, 0x00, 0xFF);        
+                        const auto clr = board.color(v);
+                        SDL_SetRenderDrawColor(g, clr[0], clr[1], clr[2], 0xFF);
                         SDL_RenderFillRect(g, &rCell);
                     }
                 }
