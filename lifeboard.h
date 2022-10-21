@@ -1,7 +1,7 @@
 #ifndef LIFEBOARD_H
 #define LIFEBOARD_H
 
-#include <memory>
+#include "tiled_array.h"
 #include <array>
 #include <cstdint>
 #include <cassert>
@@ -11,7 +11,8 @@
  */
 class LifeBoard
 {
-    std::unique_ptr<int[]> m_data;
+    tiled_array_2d<int, 4> m_curGen,
+                           m_nextGen;
     int m_width = 0,
         m_height = 0;
 
@@ -31,16 +32,11 @@ public:
         return m_height;
     }
 
-    int index(int r, int c) const noexcept
-    {
-        return r * m_width + c;
-    }
-
     int cell(int r, int c) const noexcept
     {
         assert(c < m_width);
         assert(r < m_height);
-        return m_data[index(r, c)];
+        return m_curGen.at(c, r);
     }
 
     void update();
