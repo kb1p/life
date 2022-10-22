@@ -21,7 +21,7 @@ void LifeBoard::init(int width, int height, float dens)
     for (int x = 0; x < width; x++)
         for (int y = 0; y < height; y++)
         {
-            auto &v = m_curGen.at(x, y);
+            auto &v = m_curGen[x][y];
             if (static_cast<float>(std::rand()) / RAND_MAX <= dens)
                 v = 1;
             else
@@ -56,7 +56,7 @@ void LifeBoard::update()
                 if (n[i] != EMPTY_CELL)
                     nn++;
 
-            auto &out = m_nextGen.at(x, y);
+            auto &out = m_nextGen[x][y];
             if (nn == 3)
                 out = 1;
             else if (nn != 2 || c == EMPTY_CELL)

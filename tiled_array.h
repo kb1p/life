@@ -12,6 +12,42 @@ public:
     using value_type = T;
     using size_type = size_t;
 
+    class accessor final
+    {
+        tiled_array_2d &m_arr;
+        const size_type m_x;
+
+    public:
+        accessor(tiled_array_2d &arr, const size_type x) noexcept:
+            m_arr { arr },
+            m_x { x }
+        {
+        }
+
+        value_type &operator[](const size_type r) noexcept
+        {
+            return m_arr.m_data[m_arr.index(m_x, r)];
+        }
+    };
+
+    class const_accessor final
+    {
+        const tiled_array_2d &m_arr;
+        const size_type m_x;
+
+    public:
+        const_accessor(const tiled_array_2d &arr, const size_type x) noexcept:
+            m_arr { arr },
+            m_x { x }
+        {
+        }
+
+        const value_type &operator[](const size_type r) const noexcept
+        {
+            return m_arr.m_data[m_arr.index(m_x, r)];
+        }
+    };
+
     tiled_array_2d() = default;
 
     tiled_array_2d(size_type reqWidth, size_type reqHeight)
@@ -49,6 +85,16 @@ public:
     value_type &at(const size_type x, const size_type y) noexcept
     {
         return m_data[index(x, y)];
+    }
+
+    accessor operator[](const size_type x) noexcept
+    {
+        return { *this, x };
+    }
+
+    const_accessor operator[](const size_type x) const noexcept
+    {
+        return { *this, x };
     }
 
     const value_type &at(const size_type x, const size_type y) const noexcept
