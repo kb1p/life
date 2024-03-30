@@ -1,6 +1,7 @@
 #ifndef TILED_ARRAY_H
 #define TILED_ARRAY_H
 
+#include <type_traits>
 #include <memory>
 #include <cstring>
 #include <cassert>
@@ -12,40 +13,27 @@ public:
     using value_type = T;
     using size_type = size_t;
 
+    template <bool Const>
     class accessor final
     {
-        tiled_array_2d &m_arr;
-        const size_type m_x;
-
     public:
-        accessor(tiled_array_2d &arr, const size_type x) noexcept:
+        using reference_type = typename std::conditional<Const, const tiled_array_2d&, tiled_array_2d&>::type;
+        using value_ref_type = typename std::conditional<Const, const value_type&, value_type&>::type;
+
+        accessor(reference_type arr, const size_type x) noexcept:
             m_arr { arr },
             m_x { x }
         {
         }
 
-        value_type &operator[](const size_type r) noexcept
+        value_ref_type operator[](const size_type r) const noexcept
         {
             return m_arr.m_data[m_arr.index(m_x, r)];
         }
-    };
 
-    class const_accessor final
-    {
-        const tiled_array_2d &m_arr;
+    private:
+        reference_type m_arr;
         const size_type m_x;
-
-    public:
-        const_accessor(const tiled_array_2d &arr, const size_type x) noexcept:
-            m_arr { arr },
-            m_x { x }
-        {
-        }
-
-        const value_type &operator[](const size_type r) const noexcept
-        {
-            return m_arr.m_data[m_arr.index(m_x, r)];
-        }
     };
 
     tiled_array_2d() = default;
@@ -87,12 +75,12 @@ public:
         return m_data[index(x, y)];
     }
 
-    accessor operator[](const size_type x) noexcept
+    accessor<false> operator[](const size_type x) noexcept
     {
         return { *this, x };
     }
 
-    const_accessor operator[](const size_type x) const noexcept
+    accessor<true> operator[](const size_type x) const noexcept
     {
         return { *this, x };
     }
